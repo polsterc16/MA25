@@ -48,7 +48,7 @@ begin
       
       if reset = '1' then
         --v_count := (others => '0');
-        v_count := TO_SIGNED(c_START, nbits_g);
+        v_count := TO_SIGNED(13, nbits_g);
       elsif enable = '1' then
         if dir = '1' then
           v_count := counter+1;

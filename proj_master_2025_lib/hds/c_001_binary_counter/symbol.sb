@@ -11,9 +11,14 @@ unitName "std_logic_1164"
 library "ieee"
 unitName "numeric_std"
 )
+(DmPackageRef
+library "proj_master_2025_lib"
+unitName "p_001_test_package"
+)
 ]
 libraryRefs [
 "ieee"
+"proj_master_2025_lib"
 ]
 )
 version "26.1"
@@ -318,7 +323,7 @@ name "nbits_g"
 type "integer"
 value "8"
 )
-uid 146,0
+uid 221,0
 )
 ]
 )
@@ -374,7 +379,7 @@ uid 137,0
 litem &49
 pos 0
 dimension 20
-uid 147,0
+uid 222,0
 )
 ]
 )
@@ -539,7 +544,7 @@ value "LAPTOP-7KFJT032"
 )
 (vvPair
 variable "graphical_source_time"
-value "10:14:54"
+value "10:57:44"
 )
 (vvPair
 variable "group"
@@ -639,7 +644,7 @@ value "symbol"
 )
 (vvPair
 variable "time"
-value "10:14:54"
+value "10:57:44"
 )
 (vvPair
 variable "unit"
@@ -724,7 +729,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,2000,59500,2800"
-st "clk    : in     std_logic  ;"
+st "clk    : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -770,7 +776,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,5200,82000,6000"
-st "cnt    : out    std_logic_vector (nbits_g-1 downto 0) := (others => '0')"
+st "cnt    : out    std_logic_vector (nbits_g-1 downto 0) := (others => '0')
+"
 )
 thePort (LogicalPort
 lang 11
@@ -818,7 +825,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,4400,59500,5200"
-st "dir    : in     std_logic  ;"
+st "dir    : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -863,7 +871,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,3600,59500,4400"
-st "enable : in     std_logic  ;"
+st "enable : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -908,7 +917,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,2800,59500,3600"
-st "reset  : in     std_logic  ;"
+st "reset  : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -968,7 +978,8 @@ font "Courier New,8,0"
 xt "15000,15600,26500,18000"
 st "Generic Declarations
 
-nbits_g integer 8  "
+nbits_g integer 8  
+"
 )
 header "Generic Declarations"
 showHdrWhenContentsEmpty 1
@@ -1342,13 +1353,15 @@ uid 50,0
 va (VaSet
 font "arial,8,0"
 )
-xt "0,1000,12800,7000"
+xt "0,1000,18500,9000"
 st "LIBRARY ieee;
 --USE ieee.std_logic_1164.all;
 --USE ieee.std_logic_arith.all;
 --USE ieee.std_logic_unsigned.all;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;"
+use ieee.numeric_std.all;
+library proj_master_2025_lib;
+use proj_master_2025_lib.p_001_test_package.all;"
 tm "PackageList"
 )
 ]
@@ -1628,6 +1641,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 172,0
+lastUid 222,0
 activeModelName "Symbol"
 )
