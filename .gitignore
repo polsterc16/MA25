@@ -1,4 +1,5 @@
 *.lnk
+*.lck
 
 ipcache
 *.ip_user_files
