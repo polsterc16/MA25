@@ -14,7 +14,7 @@ LIBRARY ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity TEST_binary_counter is
+entity c_001_binary_counter is
    generic( 
       nbits_g : integer := 8
    );
@@ -28,10 +28,10 @@ entity TEST_binary_counter is
 
 -- Declarations
 
-end TEST_binary_counter ;
+end c_001_binary_counter ;
 
 --
-architecture rtl of TEST_binary_counter is
+architecture rtl of c_001_binary_counter is
   -- define internal signals here
   signal counter: signed(cnt'range) := (others => '0');
   

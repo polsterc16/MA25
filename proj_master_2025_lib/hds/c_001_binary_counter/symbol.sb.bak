@@ -150,7 +150,7 @@ font "Tahoma,10,0"
 )
 emptyMRCItem *20 (MRCItem
 litem &1
-pos 5
+pos 3
 dimension 20
 )
 uid 106,0
@@ -346,7 +346,7 @@ font "Tahoma,10,0"
 )
 emptyMRCItem *51 (MRCItem
 litem &37
-pos 1
+pos 3
 dimension 20
 )
 uid 134,0
@@ -455,11 +455,11 @@ value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds"
 )
 (vvPair
 variable "SideDataDesignDir"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb.info"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb.info"
 )
 (vvPair
 variable "SideDataUserDir"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb.user"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb.user"
 )
 (vvPair
 variable "SourceDir"
@@ -479,11 +479,11 @@ value "%(unit)_%(view)_config"
 )
 (vvPair
 variable "d"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter"
 )
 (vvPair
 variable "d_logical"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\TEST_binary_counter"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter"
 )
 (vvPair
 variable "date"
@@ -503,7 +503,7 @@ value "11"
 )
 (vvPair
 variable "entity_name"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "ext"
@@ -539,7 +539,7 @@ value "LAPTOP-7KFJT032"
 )
 (vvPair
 variable "graphical_source_time"
-value "09:45:28"
+value "10:14:42"
 )
 (vvPair
 variable "group"
@@ -558,12 +558,16 @@ variable "library"
 value "proj_master_2025_lib"
 )
 (vvPair
+variable "library_downstream_ModelSimCompiler"
+value "$HDS_PROJECT_DIR\\proj_master_2025_lib\\work"
+)
+(vvPair
 variable "mm"
 value "03"
 )
 (vvPair
 variable "module_name"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "month"
@@ -575,11 +579,11 @@ value "März"
 )
 (vvPair
 variable "p"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb"
 )
 (vvPair
 variable "p_logical"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\TEST_binary_counter\\symbol.sb"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb"
 )
 (vvPair
 variable "package_name"
@@ -635,11 +639,11 @@ value "symbol"
 )
 (vvPair
 variable "time"
-value "09:45:28"
+value "10:14:42"
 )
 (vvPair
 variable "unit"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "user"
@@ -671,24 +675,6 @@ uid 8,0
 optionalChildren [
 *64 (CptPort
 uid 51,0
-optionalChildren [
-*65 (FFT
-pts [
-"15750,25000"
-"15000,25375"
-"15000,24625"
-]
-uid 172,0
-ro 90
-va (VaSet
-vasetType 1
-fg "0,65535,0"
-lineColor "0,32896,0"
-lineWidth 2
-)
-xt "15000,24625,15750,25375"
-)
-]
 ps "OnEdgeStrategy"
 shape (Triangle
 uid 52,0
@@ -697,7 +683,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,24625,15000,25375"
+xt "14250,22625,15000,23375"
 )
 tg (CPTG
 uid 53,0
@@ -708,9 +694,9 @@ uid 54,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,24500,17400,25500"
+xt "16000,22500,17400,23500"
 st "clk"
-blo "16000,25300"
+blo "16000,23300"
 tm "CptPortNameMgr"
 )
 )
@@ -720,7 +706,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,2000,59500,2800"
-st "clk    : in     std_logic  ;"
+st "clk    : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -732,7 +719,7 @@ suid 1,0
 )
 )
 )
-*66 (CptPort
+*65 (CptPort
 uid 56,0
 ps "OnEdgeStrategy"
 shape (Triangle
@@ -742,7 +729,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "27000,21625,27750,22375"
+xt "27000,18625,27750,19375"
 )
 tg (CPTG
 uid 58,0
@@ -753,10 +740,10 @@ uid 59,0
 va (VaSet
 font "arial,8,0"
 )
-xt "19300,21500,26000,22500"
+xt "19300,18500,26000,19500"
 st "cnt : (nbits_g-1:0)"
 ju 2
-blo "26000,22300"
+blo "26000,19300"
 tm "CptPortNameMgr"
 )
 )
@@ -766,7 +753,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,5200,82000,6000"
-st "cnt    : out    std_logic_vector (nbits_g-1 downto 0) := (others => '0')"
+st "cnt    : out    std_logic_vector (nbits_g-1 downto 0) := (others => '0')
+"
 )
 thePort (LogicalPort
 lang 11
@@ -781,7 +769,7 @@ i "(others => '0')"
 )
 )
 )
-*67 (CptPort
+*66 (CptPort
 uid 62,0
 ps "OnEdgeStrategy"
 shape (Triangle
@@ -791,7 +779,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,22625,15000,23375"
+xt "14250,19625,15000,20375"
 )
 tg (CPTG
 uid 64,0
@@ -802,9 +790,9 @@ uid 65,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,22500,17300,23500"
+xt "16000,19500,17300,20500"
 st "dir"
-blo "16000,23300"
+blo "16000,20300"
 tm "CptPortNameMgr"
 )
 )
@@ -814,7 +802,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,4400,59500,5200"
-st "dir    : in     std_logic  ;"
+st "dir    : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -826,7 +815,7 @@ suid 3,0
 )
 )
 )
-*68 (CptPort
+*67 (CptPort
 uid 67,0
 ps "OnEdgeStrategy"
 shape (Triangle
@@ -836,7 +825,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,21625,15000,22375"
+xt "14250,18625,15000,19375"
 )
 tg (CPTG
 uid 69,0
@@ -847,9 +836,9 @@ uid 70,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,21500,18600,22500"
+xt "16000,18500,18600,19500"
 st "enable"
-blo "16000,22300"
+blo "16000,19300"
 tm "CptPortNameMgr"
 )
 )
@@ -859,7 +848,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,3600,59500,4400"
-st "enable : in     std_logic  ;"
+st "enable : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -871,7 +861,7 @@ suid 4,0
 )
 )
 )
-*69 (CptPort
+*68 (CptPort
 uid 72,0
 ps "OnEdgeStrategy"
 shape (Triangle
@@ -881,7 +871,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,23625,15000,24375"
+xt "14250,20625,15000,21375"
 )
 tg (CPTG
 uid 74,0
@@ -892,9 +882,9 @@ uid 75,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,23500,18100,24500"
+xt "16000,20500,18100,21500"
 st "reset"
-blo "16000,24300"
+blo "16000,21300"
 tm "CptPortNameMgr"
 )
 )
@@ -904,7 +894,8 @@ va (VaSet
 font "Courier New,8,0"
 )
 xt "44000,2800,59500,3600"
-st "reset  : in     std_logic  ;"
+st "reset  : in     std_logic  ;
+"
 )
 thePort (LogicalPort
 lang 11
@@ -918,14 +909,13 @@ suid 5,0
 )
 ]
 shape (Rectangle
-uid 171,0
 va (VaSet
 vasetType 1
 fg "0,65535,0"
 lineColor "0,32896,0"
 lineWidth 2
 )
-xt "15000,21000,27000,29000"
+xt "15000,18000,27000,26000"
 )
 oxt "15000,6000,33000,26000"
 biTextGroup (BiTextGroup
@@ -937,21 +927,21 @@ uid 11,0
 va (VaSet
 font "arial,8,1"
 )
-xt "16500,26000,25500,27000"
+xt "17450,23000,26450,24000"
 st "proj_master_2025_lib"
-blo "16500,26800"
+blo "17450,23800"
 )
 second (Text
 uid 12,0
 va (VaSet
 font "arial,8,1"
 )
-xt "16500,27000,25200,28000"
-st "TEST_binary_counter"
-blo "16500,27800"
+xt "17450,24000,26550,25000"
+st "c_001_binary_counter"
+blo "17450,24800"
 )
 )
-gi *70 (GenericInterface
+gi *69 (GenericInterface
 uid 13,0
 ps "CenterOffsetStrategy"
 matrix (Matrix
@@ -961,10 +951,11 @@ uid 15,0
 va (VaSet
 font "Courier New,8,0"
 )
-xt "-24000,19000,-12500,21400"
+xt "-34000,11000,-22500,13400"
 st "Generic Declarations
 
-nbits_g integer 8  "
+nbits_g integer 8  
+"
 )
 header "Generic Declarations"
 showHdrWhenContentsEmpty 1
@@ -983,10 +974,10 @@ portInstanceVis (PortSigDisplay
 portVis (PortSigDisplay
 )
 )
-*71 (Grouping
+*70 (Grouping
 uid 16,0
 optionalChildren [
-*72 (CommentText
+*71 (CommentText
 uid 18,0
 shape (Rectangle
 uid 19,0
@@ -1017,7 +1008,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*73 (CommentText
+*72 (CommentText
 uid 21,0
 shape (Rectangle
 uid 22,0
@@ -1048,7 +1039,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*74 (CommentText
+*73 (CommentText
 uid 24,0
 shape (Rectangle
 uid 25,0
@@ -1079,7 +1070,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*75 (CommentText
+*74 (CommentText
 uid 27,0
 shape (Rectangle
 uid 28,0
@@ -1110,7 +1101,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*76 (CommentText
+*75 (CommentText
 uid 30,0
 shape (Rectangle
 uid 31,0
@@ -1140,7 +1131,7 @@ visibleWidth 20000
 ignorePrefs 1
 titleBlock 1
 )
-*77 (CommentText
+*76 (CommentText
 uid 33,0
 shape (Rectangle
 uid 34,0
@@ -1171,7 +1162,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*78 (CommentText
+*77 (CommentText
 uid 36,0
 shape (Rectangle
 uid 37,0
@@ -1202,7 +1193,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*79 (CommentText
+*78 (CommentText
 uid 39,0
 shape (Rectangle
 uid 40,0
@@ -1233,7 +1224,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*80 (CommentText
+*79 (CommentText
 uid 42,0
 shape (Rectangle
 uid 43,0
@@ -1264,7 +1255,7 @@ position 1
 ignorePrefs 1
 titleBlock 1
 )
-*81 (CommentText
+*80 (CommentText
 uid 45,0
 shape (Rectangle
 uid 46,0
@@ -1320,11 +1311,11 @@ xShown 1
 yShown 1
 color "26368,26368,26368"
 )
-packageList *82 (PackageList
+packageList *81 (PackageList
 uid 48,0
 stg "VerticalLayoutStrategy"
 textVec [
-*83 (Text
+*82 (Text
 uid 49,0
 va (VaSet
 font "arial,8,1"
@@ -1333,7 +1324,7 @@ xt "0,0,5400,1000"
 st "Package List"
 blo "0,800"
 )
-*84 (MLText
+*83 (MLText
 uid 50,0
 va (VaSet
 font "arial,8,0"
@@ -1349,11 +1340,10 @@ tm "PackageList"
 )
 ]
 )
-windowSize "2016,54,3032,744"
-viewArea "-4510,8086,40878,38960"
-cachedDiagramExtent "-24000,0,82000,49000"
-hasePageBreakOrigin 1
-pageBreakOrigin "-25000,0"
+windowSize "0,0,1015,690"
+viewArea "0,0,0,0"
+cachedDiagramExtent "0,0,0,0"
+pageBreakOrigin "0,0"
 defaultCommentText (CommentText
 shape (Rectangle
 layer 0
@@ -1465,7 +1455,7 @@ st "<cell>"
 blo "22200,16800"
 )
 )
-gi *85 (GenericInterface
+gi *84 (GenericInterface
 ps "CenterOffsetStrategy"
 matrix (Matrix
 text (MLText
@@ -1566,7 +1556,7 @@ o 0
 )
 )
 )
-DeclarativeBlock *86 (SymDeclBlock
+DeclarativeBlock *85 (SymDeclBlock
 uid 1,0
 stg "SymDeclLayoutStrategy"
 declLabel (Text
@@ -1624,6 +1614,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 172,0
-activeModelName "Symbol"
+lastUid 147,0
+activeModelName "Symbol:CDM"
 )

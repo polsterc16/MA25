@@ -455,11 +455,11 @@ value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds"
 )
 (vvPair
 variable "SideDataDesignDir"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb.info"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb.info"
 )
 (vvPair
 variable "SideDataUserDir"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb.user"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb.user"
 )
 (vvPair
 variable "SourceDir"
@@ -479,11 +479,11 @@ value "%(unit)_%(view)_config"
 )
 (vvPair
 variable "d"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter"
 )
 (vvPair
 variable "d_logical"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\TEST_binary_counter"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter"
 )
 (vvPair
 variable "date"
@@ -503,7 +503,7 @@ value "11"
 )
 (vvPair
 variable "entity_name"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "ext"
@@ -539,7 +539,7 @@ value "LAPTOP-7KFJT032"
 )
 (vvPair
 variable "graphical_source_time"
-value "09:45:46"
+value "10:14:54"
 )
 (vvPair
 variable "group"
@@ -558,12 +558,16 @@ variable "library"
 value "proj_master_2025_lib"
 )
 (vvPair
+variable "library_downstream_ModelSimCompiler"
+value "$HDS_PROJECT_DIR\\proj_master_2025_lib\\work"
+)
+(vvPair
 variable "mm"
 value "03"
 )
 (vvPair
 variable "module_name"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "month"
@@ -575,11 +579,11 @@ value "März"
 )
 (vvPair
 variable "p"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\@t@e@s@t_binary_counter\\symbol.sb"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb"
 )
 (vvPair
 variable "p_logical"
-value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\TEST_binary_counter\\symbol.sb"
+value "D:\\DCD_workspace\\proj_master_2025\\proj_master_2025_lib\\hds\\c_001_binary_counter\\symbol.sb"
 )
 (vvPair
 variable "package_name"
@@ -635,11 +639,11 @@ value "symbol"
 )
 (vvPair
 variable "time"
-value "09:45:46"
+value "10:14:54"
 )
 (vvPair
 variable "unit"
-value "TEST_binary_counter"
+value "c_001_binary_counter"
 )
 (vvPair
 variable "user"
@@ -674,9 +678,9 @@ uid 51,0
 optionalChildren [
 *65 (FFT
 pts [
-"15750,25000"
-"15000,25375"
-"15000,24625"
+"15750,23000"
+"15000,23375"
+"15000,22625"
 ]
 uid 172,0
 ro 90
@@ -686,7 +690,7 @@ fg "0,65535,0"
 lineColor "0,32896,0"
 lineWidth 2
 )
-xt "15000,24625,15750,25375"
+xt "15000,22625,15750,23375"
 )
 ]
 ps "OnEdgeStrategy"
@@ -697,7 +701,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,24625,15000,25375"
+xt "14250,22625,15000,23375"
 )
 tg (CPTG
 uid 53,0
@@ -708,9 +712,9 @@ uid 54,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,24500,17400,25500"
+xt "16000,22500,17400,23500"
 st "clk"
-blo "16000,25300"
+blo "16000,23300"
 tm "CptPortNameMgr"
 )
 )
@@ -742,7 +746,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "27000,21625,27750,22375"
+xt "27000,18625,27750,19375"
 )
 tg (CPTG
 uid 58,0
@@ -753,10 +757,10 @@ uid 59,0
 va (VaSet
 font "arial,8,0"
 )
-xt "19300,21500,26000,22500"
+xt "19300,18500,26000,19500"
 st "cnt : (nbits_g-1:0)"
 ju 2
-blo "26000,22300"
+blo "26000,19300"
 tm "CptPortNameMgr"
 )
 )
@@ -791,7 +795,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,22625,15000,23375"
+xt "14250,19625,15000,20375"
 )
 tg (CPTG
 uid 64,0
@@ -802,9 +806,9 @@ uid 65,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,22500,17300,23500"
+xt "16000,19500,17300,20500"
 st "dir"
-blo "16000,23300"
+blo "16000,20300"
 tm "CptPortNameMgr"
 )
 )
@@ -836,7 +840,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,21625,15000,22375"
+xt "14250,18625,15000,19375"
 )
 tg (CPTG
 uid 69,0
@@ -847,9 +851,9 @@ uid 70,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,21500,18600,22500"
+xt "16000,18500,18600,19500"
 st "enable"
-blo "16000,22300"
+blo "16000,19300"
 tm "CptPortNameMgr"
 )
 )
@@ -881,7 +885,7 @@ va (VaSet
 vasetType 1
 fg "0,65535,0"
 )
-xt "14250,23625,15000,24375"
+xt "14250,20625,15000,21375"
 )
 tg (CPTG
 uid 74,0
@@ -892,9 +896,9 @@ uid 75,0
 va (VaSet
 font "arial,8,0"
 )
-xt "16000,23500,18100,24500"
+xt "16000,20500,18100,21500"
 st "reset"
-blo "16000,24300"
+blo "16000,21300"
 tm "CptPortNameMgr"
 )
 )
@@ -925,7 +929,7 @@ fg "0,65535,0"
 lineColor "0,32896,0"
 lineWidth 2
 )
-xt "15000,21000,27000,29000"
+xt "15000,18000,27000,26000"
 )
 oxt "15000,6000,33000,26000"
 biTextGroup (BiTextGroup
@@ -937,18 +941,18 @@ uid 11,0
 va (VaSet
 font "arial,8,1"
 )
-xt "16500,26000,25500,27000"
+xt "17450,23000,26450,24000"
 st "proj_master_2025_lib"
-blo "16500,26800"
+blo "17450,23800"
 )
 second (Text
 uid 12,0
 va (VaSet
 font "arial,8,1"
 )
-xt "16500,27000,25200,28000"
-st "TEST_binary_counter"
-blo "16500,27800"
+xt "17450,24000,26550,25000"
+st "c_001_binary_counter"
+blo "17450,24800"
 )
 )
 gi *70 (GenericInterface
@@ -961,7 +965,7 @@ uid 15,0
 va (VaSet
 font "Courier New,8,0"
 )
-xt "15000,18600,26500,21000"
+xt "15000,15600,26500,18000"
 st "Generic Declarations
 
 nbits_g integer 8  "
@@ -1349,11 +1353,11 @@ tm "PackageList"
 )
 ]
 )
-windowSize "2016,54,3033,744"
-viewArea "-26170,-6715,63209,54003"
+windowSize "1920,108,2936,798"
+viewArea "-39470,-500,31450,47740"
 cachedDiagramExtent "0,0,82000,49000"
 hasePageBreakOrigin 1
-pageBreakOrigin "-25000,0"
+pageBreakOrigin "-35000,0"
 defaultCommentText (CommentText
 shape (Rectangle
 layer 0
@@ -1624,6 +1628,6 @@ xt "42000,0,42000,0"
 tm "SyDeclarativeTextMgr"
 )
 )
-lastUid 195,0
+lastUid 172,0
 activeModelName "Symbol"
 )

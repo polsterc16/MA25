@@ -138,7 +138,7 @@ value "LAPTOP-7KFJT032"
 )
 (vvPair
 variable "graphical_source_time"
-value "10:04:13"
+value "10:05:46"
 )
 (vvPair
 variable "group"
@@ -238,7 +238,7 @@ value "struct"
 )
 (vvPair
 variable "time"
-value "10:04:13"
+value "10:05:46"
 )
 (vvPair
 variable "unit"
@@ -912,7 +912,7 @@ uid 210,0
 va (VaSet
 font "arial,8,0"
 )
-xt "8200,19200,17800,41200"
+xt "8200,19200,17800,43200"
 st "
 -- eb1 1   
 -- gen clk signal
@@ -927,12 +927,14 @@ end process;
 -- gen permanent signals
 process
 begin
- enable <= '1';
+ enable <= '0';
  dir <= '1';
  reset <= '1';
 
  wait for 15 ns;
  reset <= '0';
+ wait for 10 ns;
+ enable <= '1';
 
  wait;
 end process;
