@@ -1,0 +1,110 @@
+DESIGN tb_001_binary_counter
+VIEW symbol.sb
+NO_GRAPHIC 0
+DESIGN tb_001_binary_counter
+VIEW symbol.sb
+GRAPHIC 50,0 8 0 
+DESIGN tb_001_binary_counter
+VIEW symbol.sb
+GRAPHIC 1,0 13 0 
+DESIGN tb_001_binary_counter
+VIEW symbol.sb
+GRAPHIC 1,0 14 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 17
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 41,0 26 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 29
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 0,0 32 2 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 249,0 37 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 257,0 38 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 233,0 39 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 225,0 40 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 241,0 41 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 42
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 43
+LIBRARY proj_master_2025_lib
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 191,0 45 0 
+DESIGN @t@e@s@t_binary_counter
+VIEW symbol.sb
+GRAPHIC 14,0 46 1 
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 51,0 50 0 
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 72,0 51 0 
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 67,0 52 0 
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 62,0 53 0 
+DESIGN @t@e@s@t_binary_counter
+VIEW rtl
+GRAPHIC 56,0 54 0 
+LIBRARY proj_master_2025_lib
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 57
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 191,0 60 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 63
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 201,0 66 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 91
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 92
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 191,0 94 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 198,0 95 1 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 251,0 99 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 243,0 100 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 227,0 101 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 235,0 102 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+GRAPHIC 259,0 103 0 
+DESIGN tb_001_binary_counter
+VIEW struct.bd
+NO_GRAPHIC 106

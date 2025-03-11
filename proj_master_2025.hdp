@@ -1,3 +1,5 @@
+[ModelSim]
+proj_master_2025_lib = $HDS_PROJECT_DIR\proj_master_2025_lib\work
 [hdl]
 proj_master_2025_lib = $HDS_PROJECT_DIR\proj_master_2025_lib\hdl
 [hds]
