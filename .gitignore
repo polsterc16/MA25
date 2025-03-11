@@ -1,5 +1,7 @@
 *.lnk
 *.lck
+_opt__lock
+.cache.dat
 
 ipcache
 *.ip_user_files
