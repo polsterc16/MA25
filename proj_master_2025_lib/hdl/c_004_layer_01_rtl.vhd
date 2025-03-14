@@ -22,10 +22,10 @@ entity c_004_layer_01 is
       clk           : in  std_logic;
       reset         : in  std_logic;
       enable        : in  std_logic;
-      dst_rx        : in  std_logic;
-      src_tx        : in  std_logic;
-      ready_to_tx   : out std_logic := '0';
-      ready_to_rx   : out std_logic := '1';
+      dst_RX        : in  std_logic;
+      src_TX        : in  std_logic;
+      ready_to_TX   : out std_logic := '0';
+      ready_to_RX   : out std_logic := '1';
       layer_in      : in  t_array_data(0 to c_A_LAYER_SIZE(g_layer_index)-1);
       layer_out     : out t_array_data(0 to c_A_LAYER_SIZE(g_layer_index+1)-1) := (others=>(others=>'0'))
    );
@@ -35,65 +35,86 @@ end entity c_004_layer_01;
 
 --
 architecture rtl of c_004_layer_01 is
-  SIGNAL next_state, current_state : t_stm_layer;
-  SIGNAL next_node_prev  : integer := 0;
-  SIGNAL current_node_prev : integer := 0;
+  SIGNAL NEX_state, CUR_state : t_stm_layer;
+  SIGNAL NEX_node_prev : integer := 0;
+  SIGNAL CUR_node_prev : integer := 0;
+  
+  SIGNAL NEX_ready_to_RX : std_logic := '0';
+  SIGNAL NEX_ready_to_TX : std_logic := '0';
+  SIGNAL NEX_layer_out   : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index+1)-1) := (others=>(others=>'0'));
   
   --SIGNAL node_idx    : integer := 0;
-  SIGNAL data_in      : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index-1)-1);
-  SIGNAL data_acum    : t_array_data_dw(0 to c_A_LAYER_SIZE(g_layer_index)-1);
+  SIGNAL CUR_data_in      : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index-1)-1);
+  SIGNAL NEX_data_in      : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index-1)-1);
+  SIGNAL CUR_data_acum    : t_array_data_dw(0 to c_A_LAYER_SIZE(g_layer_index)-1);
+  SIGNAL NEX_data_acum    : t_array_data_dw(0 to c_A_LAYER_SIZE(g_layer_index)-1);
   -- CONST  c_WEIGHTS    : t_array_weight_layer := c_A_WEIGHTS(g_layer_index);
 begin
   P_STM : process(current_state, current_node_prev)
   begin
-    -- default assignments
-    ready_to_rx <= '0';
+    -- -- default assignments
+    -- internal signals
+    NEX_state     <= CUR_state;
+    NEX_node_prev <= CUR_node_prev;
     
-    case(current_state) is
+    NEX_data_in   <= CUR_data_in;
+    NEX_data_acum <= CUR_data_acum;
+    
+    -- signals to outputs
+    NEX_ready_to_RX <= ready_to_RX;
+    NEX_ready_to_TX <= ready_to_TX;
+    NEX_layer_out <= layer_out;
+    
+    case(CUR_state) is
       -- we send our result, until it is accepted
       when IDLE_TX =>
-        ready_to_tx <= '1';
+        NEX_ready_to_TX <= '1';
         
-        if dst_rx = '1' then
+        if dst_RX = '1' then
           -- goto reveicer mode
-          ready_to_tx <= '0';
-          next_state <= IDLE_RX;
+          NEX_ready_to_TX <= '0';
+          NEX_state <= IDLE_RX;
         end if;
         
       -- we wait until we receive new data
       when IDLE_RX =>
-        if src_tx = '1' then
-          ready_to_rx <= '1'; -- set to 1 during transition
+        if src_TX = '1' then
+          NEX_ready_to_RX <= '1'; -- set to 1 during transition
           
-          data_in <= layer_in; -- store input
-          next_state <= BIAS_SETUP;
+          NEX_data_in <= layer_in; -- store input
+          NEX_state <= BIAS_SETUP;
         end if;
         
       -- we fill our acummulators with bias value
       when BIAS_SETUP =>
+        NEX_ready_to_RX <= '0'; -- reset
+        
         -- initialize bias in layer nodes
-        LOOP_BIAS : FOR node_idx in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
+        LOOP_BIAS : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
           -- we create first entry:
-          -- BIAS times ONE - results in double width
-          data_acum(node_idx) <=  c_A_BIAS(g_layer_index, node_idx) * c_FP_ONE ;
+          -- BIAS * ONE (Fixed Point) - results in double width
+          NEX_data_acum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
         end LOOP;
-        next_state <= ACUM;
+        
+        NEX_state <= ACUM;
+        
         -- nodes of PREVIOUS LAYER, which are decremented in ACUM
-        next_node_prev <= c_A_LAYER_SIZE(g_layer_index-1)-1;
+        NEX_node_prev <= c_A_LAYER_SIZE(g_layer_index-1)-1;
         
       -- we accumulate the node values times their weights
       when ACUM =>
         -- loop through nodes of THIS LAYER
         LOOP_Node : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
-          -- Data (THIS LAYER node) = Data (THIS LAYER node) + Weight (PREV LAYER node, relative to THIS LAYER node) * Data (PREV LAYER node)
-          data_acum(node_this) <= data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this,current_node_prev) * data_in(current_node_prev) ;
+          -- Data (THIS LAYER node) = Data (THIS LAYER node) + Weight (of PREV LAYER node, relative to THIS LAYER node) * Data (PREV LAYER node)
+          NEX_data_acum(node_this) <= CUR_data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
         end LOOP;
         
         -- decrement node of PREVIOUS LAYER
-        next_node_prev <= current_node_prev - 1;
+        NEX_node_prev <= CUR_node_prev - 1;
         -- exit if we have reached Zero
-        if next_node_prev = 0 then
-          next_state <= ACT_FUNC;
+        if CUR_node_prev = 0 then
+          NEX_state     <= ACT_FUNC;
+          NEX_node_prev <= 0;
         end if;
         
       when ACT_FUNC =>
@@ -108,19 +129,29 @@ begin
   begin
     if rising_edge(clk) then
       if reset = '1' then
-        current_state <= IDLE_RX;
-        current_node_prev <= 0;
-        next_node_prev <= 0;
+        -- internal signals
+        CUR_state <= IDLE_RX; -- default state: try to receive
+        CUR_node_prev <= 0;
         
+        CUR_data_in   <= (others=>(others=>'0'));
+        CUR_data_acum <= (others=>(others=>'0'));
         
-        ready_to_tx <= '0';
-        ready_to_rx <= '1';
-        data_in <= (others=>(others=>'0'));
-        data_acum <= (others=>(others=>'0'));
+        -- outputs
+        ready_to_TX <= '0';
+        ready_to_RX <= '1';
         layer_out <= (others=>(others=>'0'));
       else
-        current_state <= next_state;
-        current_node_prev <= next_node_prev;
+        -- internal signals
+        CUR_state     <= NEX_state;
+        CUR_node_prev <= NEX_node_prev;
+        
+        CUR_data_in   <= NEX_data_in;
+        CUR_data_acum <= NEX_data_acum;
+        
+        -- outputs
+        ready_to_TX <= NEX_ready_to_RX;
+        ready_to_RX <= NEX_ready_to_TX;
+        layer_out   <= NEX_layer_out;
       end if;
     end if;
     
