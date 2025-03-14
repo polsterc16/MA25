@@ -18,8 +18,9 @@ PACKAGE p_002_generic_01 IS
   constant c_NUM_LAYERS : integer := 4;   -- {$c_NUM_LAYERS}
   constant c_NUM_NODES_MAX : integer := 8;   -- {$c_NUM_NODES_MAX}
   
-  constant c_FP_ZERO : signed (c_DATA_WIDTH-1 downto 0) := (others=>'0');
-  constant c_FP_ONE  : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
+  constant c_FP_ZERO  : signed (c_DATA_WIDTH-1 downto 0) := (others=>'0');
+  constant c_FP_P_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
+  constant c_FP_N_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_WIDTH downto c_DATA_Q => '1', others => '0');
   
   type t_array_data is array(natural range <>) of std_logic_vector(c_DATA_WIDTH-1 downto 0);
   type t_array_data_dw is array(natural range <>) of std_logic_vector(2*c_DATA_WIDTH-1 downto 0);
@@ -53,7 +54,7 @@ PACKAGE p_002_generic_01 IS
     SIGN,
     RELU
   );
-  constant c_ACT_FUNC : t_activation_function := RELU;
+  constant c_ACT_FUNC : t_activation_function := RELU;  -- {$c_ACT_FUNC}
   
   
 END p_002_generic_01;
