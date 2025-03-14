@@ -2,6 +2,9 @@
 *.lck
 _opt__lock
 .cache.dat
+*._epf
+*._fpf
+*.bak
 
 ipcache
 *.ip_user_files
