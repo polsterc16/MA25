@@ -48,5 +48,12 @@ PACKAGE p_002_generic_01 IS
     DONE      -- calculation done
   );
   
+  type t_activation_function is (
+    IDENTITY,
+    SIGN,
+    RELU
+  );
+  constant c_ACT_FUNC : t_activation_function := RELU;
+  
   
 END p_002_generic_01;
