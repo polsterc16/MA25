@@ -118,8 +118,39 @@ begin
         end if;
         
       when ACT_FUNC =>
+        -- reminder: "CUR_data_acum" has 2x width of "layer_out" !
+		    case c_ACT_FUNC is
+		      when SIGN =>
+		        -- When: Sign Function
+		        if CUR_data_acum(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
+		          -- is zero
+		          NEX_layer_out <= c_FP_ZERO;
+	          elsif CUR_data_acum(CUR_data_acum'left) = '1' then
+	            -- is negative
+	            NEX_layer_out <= c_FP_N_ONE;
+	          else
+	            -- ELSE: is positive
+	            NEX_layer_out <= c_FP_P_ONE;
+	          end if;
+	          
+		      when RELU =>
+		        -- When: ReLu Function
+		        if CUR_data_acum(CUR_data_acum'left) = '1' then
+	            -- is negative
+	            NEX_layer_out <= c_FP_ZERO;
+	          else
+	            -- ELSE: is positive
+	            NEX_layer_out <= CUR_data_acum(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
+	          end if;
+	          
+		      when other =>
+		        -- When: Identity Function
+		        NEX_layer_out <= CUR_data_acum(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
+        end case;
+        NEX_state <= IDLE_TX;
         
       when DONE =>
+        -- empty case
         
     end case;
     
