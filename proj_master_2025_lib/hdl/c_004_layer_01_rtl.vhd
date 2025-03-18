@@ -122,16 +122,18 @@ begin
 		    case c_ACT_FUNC is
 		      when SIGN =>
 		        -- When: Sign Function
-		        if CUR_data_acum(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
-		          -- is zero
-		          NEX_layer_out <= c_FP_ZERO;
-	          elsif CUR_data_acum(CUR_data_acum'left) = '1' then
-	            -- is negative
-	            NEX_layer_out <= c_FP_N_ONE;
-	          else
-	            -- ELSE: is positive
-	            NEX_layer_out <= c_FP_P_ONE;
-	          end if;
+		        LOOP_ACT_SIGN : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
+  		          if CUR_data_acum(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
+  		            -- is zero
+    		          NEX_layer_out <= c_FP_ZERO;
+    	          elsif CUR_data_acum(CUR_data_acum'left) = '1' then
+    	            -- is negative
+    	            NEX_layer_out <= c_FP_N_ONE;
+    	          else
+    	            -- ELSE: is positive
+    	            NEX_layer_out <= c_FP_P_ONE;
+    	          end if;
+	           end loop;
 	          
 		      when RELU =>
 		        -- When: ReLu Function
