@@ -9,8 +9,15 @@
 --
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+USE ieee.numeric_std.all;
 
 PACKAGE p_002_generic_01 IS
+  
+  
+  type t_array_integer is array(natural range <>) of integer;
+  type t_array2D_integer is array(natural range <>, natural range <>) of integer;
+  
+  constant c_ADDR_WIDTH : integer := 4;  -- {$c_ADDR_WIDTH}
   
   
   constant c_DATA_WIDTH : integer := 16;  -- {$c_DATA_WIDTH}
@@ -18,9 +25,9 @@ PACKAGE p_002_generic_01 IS
   constant c_NUM_LAYERS : integer := 4;   -- {$c_NUM_LAYERS}
   constant c_NUM_NODES_MAX : integer := 8;   -- {$c_NUM_NODES_MAX}
   
-  constant c_FP_ZERO  : signed (c_DATA_WIDTH-1 downto 0) := (others=>'0');
-  constant c_FP_P_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
-  constant c_FP_N_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_WIDTH downto c_DATA_Q => '1', others => '0');
+--  constant c_FP_ZERO  : signed (c_DATA_WIDTH-1 downto 0) := (others=>'0');
+--  constant c_FP_P_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
+--  constant c_FP_N_ONE : signed (c_DATA_WIDTH-1 downto 0) := ( c_DATA_WIDTH-1 downto c_DATA_Q => (others => '1'), others => '0');
   
   type t_array_data is array(natural range <>) of std_logic_vector(c_DATA_WIDTH-1 downto 0);
   type t_array_data_dw is array(natural range <>) of std_logic_vector(2*c_DATA_WIDTH-1 downto 0);
@@ -29,16 +36,22 @@ PACKAGE p_002_generic_01 IS
   constant c_A_LAYER_SIZE : t_array_layer_size := ( 4,8,8,1 ); -- {$c_A_LAYER_SIZE}
   
   --type t_array_weight_layer is array(0 to c_NUM_NODES_MAX-1, 0 to c_NUM_NODES_MAX-1) of signed;
-  type t_array_weight_all is array(0 to c_NUM_LAYERS-1, 0 to c_NUM_NODES_MAX-1, 0 to c_NUM_NODES_MAX-1) of signed;
-  type t_array_bias_all is array(0 to c_NUM_LAYERS-1, 0 to c_NUM_NODES_MAX-1) of signed;
+--  type t_array_weight_all is array(0 to c_NUM_LAYERS-1, 0 to c_NUM_NODES_MAX-1, 0 to c_NUM_NODES_MAX-1) of signed;
+--  type t_array_bias_all is array(0 to c_NUM_LAYERS-1, 0 to c_NUM_NODES_MAX-1) of signed;
   
-  constant c_A_WEIGHTS : t_array_weight_all := (
-    ((1,1),(1,1)),
-    ((1,1),(1,1))
-  );
-  constant c_A_BIAS : t_array_bias_all := (
-    (1,1),(1,1)
-  );
+  --constant c_A_WEIGHTS : t_array_weight_all := (
+--    ((1,1),(1,1)),
+--    ((1,1),(1,1))
+--  );constant c_A_WEIGHTS : t_array_weight_all := (
+--    ((1,1),(1,1)),
+--    ((1,1),(1,1))
+--  );
+--  constant c_A_BIAS : t_array_bias_all := (
+--    (1,1),(1,1)
+--  );
+--  constant c_A_BIAS : t_array_bias_all := (
+--    (1,1),(1,1)
+--  );
   
   type t_stm_layer is (
     IDLE_TX,  -- we have finished calculation and wait for our output to be received
