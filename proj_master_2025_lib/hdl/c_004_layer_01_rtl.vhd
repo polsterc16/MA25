@@ -85,7 +85,11 @@ begin
         if src_TX = '1' then
           NEX_ready_to_RX <= '1'; -- set to 1 during transition
           
-          NEX_data_in <= layer_in; -- store input
+          --NEX_data_in <= layer_in; -- store input
+          for idx in layer_in'RANGE loop
+            NEX_data_in(idx) <= SIGNED(layer_in(idx));
+          end loop;
+          
           NEX_state <= BIAS_SETUP;
         end if;
         
@@ -98,7 +102,7 @@ begin
           -- we create first entry:
           -- BIAS * ONE (Fixed Point) - results in double width
           --NEX_data_acum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
-          NEX_data_acum(idx_node_cur) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q) );
+          NEX_data_acum(idx_node_cur) <=  SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q);
         end LOOP;
         
         NEX_state <= ACUM;
@@ -112,7 +116,7 @@ begin
         LOOP_Node : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- Data (THIS LAYER node) = Data (THIS LAYER node) + Weight (of PREV LAYER node, relative to THIS LAYER node) * Data (PREV LAYER node)
           -- NEX_data_acum(node_this) <= CUR_data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
-          NEX_data_acum(idx_node_cur) <= CUR_data_acum(idx_node_cur) + TO_SIGNED(g_layer_weights( idx_node_cur, CUR_node_prev)) * CUR_data_in(CUR_node_prev) ;
+          NEX_data_acum(idx_node_cur) <= CUR_data_acum(idx_node_cur) + TO_SIGNED(g_layer_weights( idx_node_cur, CUR_node_prev), c_DATA_WIDTH) * CUR_data_in(CUR_node_prev) ;
         end LOOP;
         
         -- decrement node of PREVIOUS LAYER
@@ -125,36 +129,40 @@ begin
         
       when ACT_FUNC =>
         -- reminder: "CUR_data_acum" has 2x width of "layer_out" !
-		    case c_ACT_FUNC is
-		      when SIGN =>
-		        -- When: Sign Function
-		        LOOP_ACT_SIGN : FOR node_this in 0 to (g_layer_length_cur-1) LOOP
-		          -- check if the whole slice is Zero
-  		          if CUR_data_acum(node_this)(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
-  		            -- is zero
-    		          NEX_layer_out <= c_FP_ZERO;
-    	          elsif CUR_data_acum(node_this)(CUR_data_acum'left) = '1' then
-    	            -- is negative
-    	            NEX_layer_out <= c_FP_N_ONE;
-    	          else
-    	            -- ELSE: is positive
-    	            NEX_layer_out <= c_FP_P_ONE;
-    	          end if;
-	           end loop;
-	          
-		      when RELU =>
-		        -- When: ReLu Function
-		        if CUR_data_acum(CUR_data_acum'left) = '1' then
-	            -- is negative
-	            NEX_layer_out <= c_FP_ZERO;
-	          else
-	            -- ELSE: is positive
-	            NEX_layer_out <= CUR_data_acum(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
-	          end if;
-	          
-		      when other =>
-		        -- When: Identity Function
-		        NEX_layer_out <= CUR_data_acum(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
+        case c_ACT_FUNC is
+          when SIGN =>
+            -- When: Sign Function
+            LOOP_ACT_SIGN : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+              -- check if the whole slice is Zero
+              if CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'RANGE) = (CUR_data_acum(idx_node_this)'range => '0') then
+                -- is zero
+                NEX_layer_out(idx_node_this) <= (others => '0');
+              elsif CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'HIGH) = '1' then
+                -- is negative
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, 2*c_DATA_WIDTH), c_DATA_Q) );
+              else
+                -- ELSE: is positive
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( 1, 2*c_DATA_WIDTH), idx_node_this) );
+              end if;
+            end loop;
+
+          when RELU =>
+            -- When: ReLu Function
+            LOOP_ACT_RELU : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+              if CUR_data_acum(idx_node_this)(CUR_data_acum'left) = '1' then
+                -- is negative
+                NEX_layer_out(idx_node_this) <= (others => '0');
+              else
+                -- ELSE: is positive
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+              end if;
+            end loop;
+
+          when others =>
+            -- When: Identity Function
+            LOOP_ACT_IDENTITY : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+              NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+            end loop;
         end case;
         NEX_state <= IDLE_TX;
         
