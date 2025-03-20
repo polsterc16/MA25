@@ -5,6 +5,8 @@ _opt__lock
 *._epf
 *._fpf
 *.bak
+*.sb
+proj_master_2025_lib/hds/
 
 ipcache
 *.ip_user_files
