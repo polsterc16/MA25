@@ -16,7 +16,11 @@ use proj_master_2025_lib.p_002_generic_01.all;
 
 entity c_004_layer_01 is
    generic( 
-      g_layer_index : integer := 1
+      g_layer_index       : integer := 1;
+      g_layer_length_cur  : integer := 4;
+      g_layer_length_prev : integer := 2;
+      g_layer_bias        : t_array_integer := (0,0,0,0);
+      g_layer_weights     : t_array2D_integer := ((0,0),(0,0),(0,0),(0,0))
    );
    port( 
       clk           : in  std_logic;
@@ -26,8 +30,8 @@ entity c_004_layer_01 is
       src_TX        : in  std_logic;
       ready_to_TX   : out std_logic := '0';
       ready_to_RX   : out std_logic := '1';
-      layer_in      : in  t_array_data(0 to c_A_LAYER_SIZE(g_layer_index)-1);
-      layer_out     : out t_array_data(0 to c_A_LAYER_SIZE(g_layer_index+1)-1) := (others=>(others=>'0'))
+      layer_in      : in  t_array_data_stdlv(0 to g_layer_length_prev-1);
+      layer_out     : out t_array_data_stdlv(0 to g_layer_length_cur-1) := (others=>(others=>'0'))
    );
 
 -- Declarations
@@ -41,16 +45,16 @@ architecture rtl of c_004_layer_01 is
   
   SIGNAL NEX_ready_to_RX : std_logic := '0';
   SIGNAL NEX_ready_to_TX : std_logic := '0';
-  SIGNAL NEX_layer_out   : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index+1)-1) := (others=>(others=>'0'));
+  SIGNAL NEX_layer_out   : t_array_data_stdlv(0 to g_layer_length_cur-1) := (others=>(others=>'0'));
   
   --SIGNAL node_idx    : integer := 0;
-  SIGNAL CUR_data_in      : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index-1)-1);
-  SIGNAL NEX_data_in      : t_array_data(0 to c_A_LAYER_SIZE(g_layer_index-1)-1);
-  SIGNAL CUR_data_acum    : t_array_data_dw(0 to c_A_LAYER_SIZE(g_layer_index)-1);
-  SIGNAL NEX_data_acum    : t_array_data_dw(0 to c_A_LAYER_SIZE(g_layer_index)-1);
+  SIGNAL CUR_data_in      : t_array_data_signed(0 to g_layer_length_prev-1);
+  SIGNAL NEX_data_in      : t_array_data_signed(0 to g_layer_length_prev-1);
+  SIGNAL CUR_data_acum    : t_array_data_signed_dw(0 to g_layer_length_cur-1);
+  SIGNAL NEX_data_acum    : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   -- CONST  c_WEIGHTS    : t_array_weight_layer := c_A_WEIGHTS(g_layer_index);
 begin
-  P_STM : process(current_state, current_node_prev)
+  P_STM : process(CUR_state, CUR_node_prev)
   begin
     -- -- default assignments
     -- internal signals
@@ -90,23 +94,25 @@ begin
         NEX_ready_to_RX <= '0'; -- reset
         
         -- initialize bias in layer nodes
-        LOOP_BIAS : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
+        LOOP_BIAS : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- we create first entry:
           -- BIAS * ONE (Fixed Point) - results in double width
-          NEX_data_acum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
+          --NEX_data_acum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
+          NEX_data_acum(idx_node_cur) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q) );
         end LOOP;
         
         NEX_state <= ACUM;
         
         -- nodes of PREVIOUS LAYER, which are decremented in ACUM
-        NEX_node_prev <= c_A_LAYER_SIZE(g_layer_index-1)-1;
+        NEX_node_prev <= g_layer_length_prev-1;
         
       -- we accumulate the node values times their weights
       when ACUM =>
         -- loop through nodes of THIS LAYER
-        LOOP_Node : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
+        LOOP_Node : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- Data (THIS LAYER node) = Data (THIS LAYER node) + Weight (of PREV LAYER node, relative to THIS LAYER node) * Data (PREV LAYER node)
-          NEX_data_acum(node_this) <= CUR_data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
+          -- NEX_data_acum(node_this) <= CUR_data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
+          NEX_data_acum(idx_node_cur) <= CUR_data_acum(idx_node_cur) + TO_SIGNED(g_layer_weights( idx_node_cur, CUR_node_prev)) * CUR_data_in(CUR_node_prev) ;
         end LOOP;
         
         -- decrement node of PREVIOUS LAYER
@@ -122,11 +128,12 @@ begin
 		    case c_ACT_FUNC is
 		      when SIGN =>
 		        -- When: Sign Function
-		        LOOP_ACT_SIGN : FOR node_this in 0 to (c_A_LAYER_SIZE(g_layer_index)-1) LOOP
-  		          if CUR_data_acum(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
+		        LOOP_ACT_SIGN : FOR node_this in 0 to (g_layer_length_cur-1) LOOP
+		          -- check if the whole slice is Zero
+  		          if CUR_data_acum(node_this)(CUR_data_acum'range) = (CUR_data_acum'range => '0') then
   		            -- is zero
     		          NEX_layer_out <= c_FP_ZERO;
-    	          elsif CUR_data_acum(CUR_data_acum'left) = '1' then
+    	          elsif CUR_data_acum(node_this)(CUR_data_acum'left) = '1' then
     	            -- is negative
     	            NEX_layer_out <= c_FP_N_ONE;
     	          else

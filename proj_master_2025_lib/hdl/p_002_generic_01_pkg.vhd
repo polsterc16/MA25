@@ -29,8 +29,11 @@ PACKAGE p_002_generic_01 IS
 --  constant c_FP_P_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
 --  constant c_FP_N_ONE : signed (c_DATA_WIDTH-1 downto 0) := ( c_DATA_WIDTH-1 downto c_DATA_Q => (others => '1'), others => '0');
   
-  type t_array_data is array(natural range <>) of std_logic_vector(c_DATA_WIDTH-1 downto 0);
-  type t_array_data_dw is array(natural range <>) of std_logic_vector(2*c_DATA_WIDTH-1 downto 0);
+  type t_array_data_stdlv is array(natural range <>) of std_logic_vector(c_DATA_WIDTH-1 downto 0);
+  type t_array_data_stdlv_dw is array(natural range <>) of std_logic_vector(2*c_DATA_WIDTH-1 downto 0);
+  
+  type t_array_data_signed is array(natural range <>) of signed(c_DATA_WIDTH-1 downto 0);
+  type t_array_data_signed_dw is array(natural range <>) of signed(2*c_DATA_WIDTH-1 downto 0);
   
   type t_array_layer_size is array(0 to c_NUM_LAYERS-1) of integer;
   constant c_A_LAYER_SIZE : t_array_layer_size := ( 4,8,8,1 ); -- {$c_A_LAYER_SIZE}
