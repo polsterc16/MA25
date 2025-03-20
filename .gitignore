@@ -7,6 +7,7 @@ _opt__lock
 *.bak
 *.sb
 proj_master_2025_lib/hds/
+*.hdp
 
 ipcache
 *.ip_user_files
