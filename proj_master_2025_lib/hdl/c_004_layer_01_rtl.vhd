@@ -78,7 +78,6 @@ begin
         
       -- we send our result, until it is accepted
       when IDLE_TX =>
-        NEX_ready_to_TX <= '1';
         
         if dst_RX = '1' then
           -- goto reveicer mode
@@ -170,6 +169,8 @@ begin
               NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
             end loop;
         end case;
+        
+        NEX_ready_to_TX <= '1';
         NEX_state <= IDLE_TX;
         
       when others =>
