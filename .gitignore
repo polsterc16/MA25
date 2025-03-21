@@ -46,7 +46,7 @@ ipcache
 *.sld
 *.txt
 *.qsys
-*.csv
+# *.csv
 xst
 netgen
 iseconfig
