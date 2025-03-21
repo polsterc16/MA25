@@ -41,8 +41,8 @@ end c_004_layer_01 ;
 --
 architecture rtl of c_004_layer_01 is
   SIGNAL NEX_state, CUR_state : t_stm_layer;
-  SIGNAL NEX_node_prev : integer range 0 to g_layer_length_prev-1 := 0;
-  SIGNAL CUR_node_prev : integer range 0 to g_layer_length_prev-1 := 0;
+  SIGNAL NEX_node_prev : integer range -1 to g_layer_length_prev-1 := 0;
+  SIGNAL CUR_node_prev : integer range -1 to g_layer_length_prev-1 := 0;
   
   SIGNAL NEX_ready_to_RX : std_logic := '0';
   SIGNAL NEX_ready_to_TX : std_logic := '0';
@@ -55,7 +55,7 @@ architecture rtl of c_004_layer_01 is
   
   CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
 begin
-  P_STM : process(CUR_state, CUR_node_prev)
+  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ready_to_RX, ready_to_TX, layer_out, layer_in)
   begin
     -- -- default assignments
     -- internal signals
