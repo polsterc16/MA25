@@ -57,12 +57,12 @@ PACKAGE p_002_generic_01 IS
 --  );
   
   type t_stm_layer is (
+    RESET,    -- default state to fall back on
     IDLE_TX,  -- we have finished calculation and wait for our output to be received
     IDLE_RX,  -- we are awaiting a valid input
     BIAS_SETUP,  -- we are awaiting a valid input
     ACUM,     -- we are calculating the nodes
-    ACT_FUNC, -- performing activation function
-    DONE      -- calculation done
+    ACT_FUNC  -- performing activation function
   );
   
   type t_activation_function is (

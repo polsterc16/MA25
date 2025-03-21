@@ -16,26 +16,27 @@ use proj_master_2025_lib.p_002_generic_01.all;
 
 entity c_004_layer_01 is
    generic( 
-      g_layer_index       : integer := 1;
-      g_layer_length_cur  : integer := 4;
-      g_layer_length_prev : integer := 2;
-      g_layer_bias        : t_array_integer := (0,0,0,0);
+      g_layer_index       : integer           := 1;
+      g_layer_length_cur  : integer           := 4;
+      g_layer_length_prev : integer           := 2;
+      g_layer_bias        : t_array_integer   := (0,0,0,0);
       g_layer_weights     : t_array2D_integer := ((0,0),(0,0),(0,0),(0,0))
    );
    port( 
-      clk           : in  std_logic;
-      reset         : in  std_logic;
-      enable        : in  std_logic;
-      dst_RX        : in  std_logic;
-      src_TX        : in  std_logic;
-      ready_to_TX   : out std_logic := '0';
-      ready_to_RX   : out std_logic := '1';
-      layer_in      : in  t_array_data_stdlv(0 to g_layer_length_prev-1);
-      layer_out     : out t_array_data_stdlv(0 to g_layer_length_cur-1) := (others=>(others=>'0'))
+      clk         : in     std_logic;
+      reset       : in     std_logic;
+      enable      : in     std_logic;
+      dst_RX      : in     std_logic;
+      src_TX      : in     std_logic;
+      ready_to_TX : out    std_logic                                      := '0';
+      ready_to_RX : out    std_logic                                      := '1';
+      layer_in    : in     t_array_data_stdlv (0 to g_layer_length_prev-1);
+      layer_out   : out    t_array_data_stdlv (0 to g_layer_length_cur-1) := (others=>(others=>'0'))
    );
 
 -- Declarations
-end entity c_004_layer_01;
+
+end c_004_layer_01 ;
 
 --
 architecture rtl of c_004_layer_01 is
@@ -70,6 +71,11 @@ begin
     NEX_layer_out <= layer_out;
     
     case(CUR_state) is
+      -- Default reset state
+      when RESET =>
+        -- always try to go to RX mode
+        NEX_state <= IDLE_RX;
+        
       -- we send our result, until it is accepted
       when IDLE_TX =>
         NEX_ready_to_TX <= '1';
@@ -166,8 +172,9 @@ begin
         end case;
         NEX_state <= IDLE_TX;
         
-      when DONE =>
-        -- empty case
+      when others =>
+        -- default catch others
+        NEX_state <= RESET;
         
     end case;
     
@@ -178,7 +185,7 @@ begin
     if rising_edge(clk) then
       if reset = '1' then
         -- internal signals
-        CUR_state <= IDLE_RX; -- default state: try to receive
+        CUR_state <= RESET; -- default state: reset
         CUR_node_prev <= 0;
         
         CUR_data_in   <= (others=>(others=>'0'));
