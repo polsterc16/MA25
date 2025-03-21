@@ -193,7 +193,7 @@ begin
         
         -- outputs
         ready_to_TX <= '0';
-        ready_to_RX <= '1';
+        ready_to_RX <= '0';
         layer_out <= (others=>(others=>'0'));
       else
         -- internal signals
@@ -204,8 +204,8 @@ begin
         CUR_data_acum <= NEX_data_acum;
         
         -- outputs
-        ready_to_TX <= NEX_ready_to_RX;
-        ready_to_RX <= NEX_ready_to_TX;
+        ready_to_TX <= NEX_ready_to_TX;
+        ready_to_RX <= NEX_ready_to_RX;
         layer_out   <= NEX_layer_out;
       end if;
     end if;
