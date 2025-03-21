@@ -29,7 +29,7 @@ entity c_004_layer_01 is
       dst_RX      : in     std_logic;
       src_TX      : in     std_logic;
       ready_to_TX : out    std_logic;
-      ready_to_RX : out    std_logic;
+      ack_RX      : out    std_logic;
       layer_in    : in     t_array_data_stdlv (0 to g_layer_length_prev-1);
       layer_out   : out    t_array_data_stdlv (0 to g_layer_length_cur-1)
    );
@@ -44,7 +44,7 @@ architecture rtl of c_004_layer_01 is
   SIGNAL NEX_node_prev : integer range -1 to g_layer_length_prev-1 := 0;
   SIGNAL CUR_node_prev : integer range -1 to g_layer_length_prev-1 := 0;
   
-  SIGNAL NEX_ready_to_RX : std_logic := '0';
+  SIGNAL NEX_ack_RX : std_logic := '0';
   SIGNAL NEX_ready_to_TX : std_logic := '0';
   SIGNAL NEX_layer_out   : t_array_data_stdlv(0 to g_layer_length_cur-1) := (others=>(others=>'0'));
   
@@ -53,9 +53,11 @@ architecture rtl of c_004_layer_01 is
   SIGNAL CUR_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   SIGNAL NEX_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   
-  CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
+--  CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
+  CONSTANT c_neg_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, c_DATA_WIDTH), c_DATA_Q) );
+  CONSTANT c_pos_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( 1, c_DATA_WIDTH), c_DATA_Q ) );
 begin
-  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ready_to_RX, ready_to_TX, layer_out, layer_in)
+  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
   begin
     -- -- default assignments
     -- internal signals
@@ -66,7 +68,7 @@ begin
     NEX_data_acum <= CUR_data_acum;
     
     -- signals to outputs
-    NEX_ready_to_RX <= ready_to_RX;
+    NEX_ack_RX <= ack_RX;
     NEX_ready_to_TX <= ready_to_TX;
     NEX_layer_out <= layer_out;
     
@@ -88,7 +90,7 @@ begin
       -- we wait until we receive new data
       when IDLE_RX =>
         if src_TX = '1' then
-          NEX_ready_to_RX <= '1'; -- set to 1 during transition
+          NEX_ack_RX <= '1'; -- set to 1 during transition
           
           --NEX_data_in <= layer_in; -- store input
           for idx in layer_in'RANGE loop
@@ -100,7 +102,7 @@ begin
         
       -- we fill our acummulators with bias value
       when BIAS_SETUP =>
-        NEX_ready_to_RX <= '0'; -- reset
+        NEX_ack_RX <= '0'; -- reset
         
         -- initialize bias in layer nodes
         LOOP_BIAS : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
@@ -134,7 +136,7 @@ begin
         
       when ACT_FUNC =>
         -- reminder: "CUR_data_acum" has 2x width of "layer_out" !
-        case c_ACT_FUNC is
+        case g_act_func is
           when AF_SIGN =>
             -- When: Sign Function
             LOOP_AF_SIGN : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
@@ -144,17 +146,18 @@ begin
                 NEX_layer_out(idx_node_this) <= (others => '0');
               elsif CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'HIGH) = '1' then
                 -- is negative
-                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, 2*c_DATA_WIDTH), c_DATA_Q) );
+                --NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, 2*c_DATA_WIDTH), c_DATA_Q) );
+                NEX_layer_out(idx_node_this) <= c_neg_one;
               else
                 -- ELSE: is positive
-                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( 1, 2*c_DATA_WIDTH), idx_node_this) );
+                NEX_layer_out(idx_node_this) <= c_pos_one;
               end if;
             end loop;
 
           when AF_RELU =>
             -- When: ReLu Function
             LOOP_AF_RELU : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
-              if CUR_data_acum(idx_node_this)(CUR_data_acum'left) = '1' then
+              if CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'HIGH) = '1' then
                 -- is negative
                 NEX_layer_out(idx_node_this) <= (others => '0');
               else
@@ -194,7 +197,7 @@ begin
         
         -- outputs
         ready_to_TX <= '0';
-        ready_to_RX <= '0';
+        ack_RX <= '0';
         layer_out <= (others=>(others=>'0'));
       else
         -- internal signals
@@ -206,7 +209,7 @@ begin
         
         -- outputs
         ready_to_TX <= NEX_ready_to_TX;
-        ready_to_RX <= NEX_ready_to_RX;
+        ack_RX <= NEX_ack_RX;
         layer_out   <= NEX_layer_out;
       end if;
     end if;
