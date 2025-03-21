@@ -17,13 +17,13 @@ PACKAGE p_002_generic_01 IS
   type t_array_integer is array(natural range <>) of integer;
   type t_array2D_integer is array(natural range <>, natural range <>) of integer;
   
-  constant c_ADDR_WIDTH : integer := 4;  -- {$c_ADDR_WIDTH}
+  --constant c_ADDR_WIDTH : integer := 4;  -- {$c_ADDR_WIDTH}
   
   
   constant c_DATA_WIDTH : integer := 16;  -- {$c_DATA_WIDTH}
   constant c_DATA_Q     : integer := 8;   -- {$c_DATA_Q}
-  constant c_NUM_LAYERS : integer := 4;   -- {$c_NUM_LAYERS}
-  constant c_NUM_NODES_MAX : integer := 8;   -- {$c_NUM_NODES_MAX}
+  --constant c_NUM_LAYERS : integer := 4;   -- {$c_NUM_LAYERS}
+  --constant c_NUM_NODES_MAX : integer := 8;   -- {$c_NUM_NODES_MAX}
   
 --  constant c_FP_ZERO  : signed (c_DATA_WIDTH-1 downto 0) := (others=>'0');
 --  constant c_FP_P_ONE : signed (c_DATA_WIDTH-1 downto 0) := (c_DATA_Q => '1', others => '0');
@@ -35,8 +35,8 @@ PACKAGE p_002_generic_01 IS
   type t_array_data_signed is array(natural range <>) of signed(c_DATA_WIDTH-1 downto 0);
   type t_array_data_signed_dw is array(natural range <>) of signed(2*c_DATA_WIDTH-1 downto 0);
   
-  type t_array_layer_size is array(0 to c_NUM_LAYERS-1) of integer;
-  constant c_A_LAYER_SIZE : t_array_layer_size := ( 4,8,8,1 ); -- {$c_A_LAYER_SIZE}
+  --type t_array_layer_size is array(0 to c_NUM_LAYERS-1) of integer;
+  --constant c_A_LAYER_SIZE : t_array_layer_size := ( 4,8,8,1 ); -- {$c_A_LAYER_SIZE}
   
   --type t_array_weight_layer is array(0 to c_NUM_NODES_MAX-1, 0 to c_NUM_NODES_MAX-1) of signed;
 --  type t_array_weight_all is array(0 to c_NUM_LAYERS-1, 0 to c_NUM_NODES_MAX-1, 0 to c_NUM_NODES_MAX-1) of signed;
@@ -57,7 +57,7 @@ PACKAGE p_002_generic_01 IS
 --  );
   
   type t_stm_layer is (
-    RESET,    -- default state to fall back on
+    RESET_STATE, -- default state to fall back on
     IDLE_TX,  -- we have finished calculation and wait for our output to be received
     IDLE_RX,  -- we are awaiting a valid input
     BIAS_SETUP,  -- we are awaiting a valid input
@@ -66,11 +66,11 @@ PACKAGE p_002_generic_01 IS
   );
   
   type t_activation_function is (
-    IDENTITY,
-    SIGN,
-    RELU
+    AF_IDENTITY,
+    AF_SIGN,
+    AF_RELU
   );
-  constant c_ACT_FUNC : t_activation_function := RELU;  -- {$c_ACT_FUNC}
+  constant c_ACT_FUNC : t_activation_function := AF_RELU;  -- {$c_ACT_FUNC}
   
   
 END p_002_generic_01;

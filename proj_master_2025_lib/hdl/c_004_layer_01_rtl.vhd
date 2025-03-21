@@ -48,12 +48,10 @@ architecture rtl of c_004_layer_01 is
   SIGNAL NEX_ready_to_TX : std_logic := '0';
   SIGNAL NEX_layer_out   : t_array_data_stdlv(0 to g_layer_length_cur-1) := (others=>(others=>'0'));
   
-  --SIGNAL node_idx    : integer := 0;
-  SIGNAL CUR_data_in      : t_array_data_signed(0 to g_layer_length_prev-1);
-  SIGNAL NEX_data_in      : t_array_data_signed(0 to g_layer_length_prev-1);
-  SIGNAL CUR_data_acum    : t_array_data_signed_dw(0 to g_layer_length_cur-1);
-  SIGNAL NEX_data_acum    : t_array_data_signed_dw(0 to g_layer_length_cur-1);
-  -- CONST  c_WEIGHTS    : t_array_weight_layer := c_A_WEIGHTS(g_layer_index);
+  SIGNAL CUR_data_in    : t_array_data_signed(0 to g_layer_length_prev-1);
+  SIGNAL NEX_data_in    : t_array_data_signed(0 to g_layer_length_prev-1);
+  SIGNAL CUR_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
+  SIGNAL NEX_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
 begin
   P_STM : process(CUR_state, CUR_node_prev)
   begin
@@ -72,7 +70,7 @@ begin
     
     case(CUR_state) is
       -- Default reset state
-      when RESET =>
+      when RESET_STATE =>
         -- always try to go to RX mode
         NEX_state <= IDLE_RX;
         
@@ -136,9 +134,9 @@ begin
       when ACT_FUNC =>
         -- reminder: "CUR_data_acum" has 2x width of "layer_out" !
         case c_ACT_FUNC is
-          when SIGN =>
+          when AF_SIGN =>
             -- When: Sign Function
-            LOOP_ACT_SIGN : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+            LOOP_AF_SIGN : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
               -- check if the whole slice is Zero
               if CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'RANGE) = (CUR_data_acum(idx_node_this)'range => '0') then
                 -- is zero
@@ -152,9 +150,9 @@ begin
               end if;
             end loop;
 
-          when RELU =>
+          when AF_RELU =>
             -- When: ReLu Function
-            LOOP_ACT_RELU : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+            LOOP_AF_RELU : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
               if CUR_data_acum(idx_node_this)(CUR_data_acum'left) = '1' then
                 -- is negative
                 NEX_layer_out(idx_node_this) <= (others => '0');
@@ -166,7 +164,7 @@ begin
 
           when others =>
             -- When: Identity Function
-            LOOP_ACT_IDENTITY : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+            LOOP_AF_IDENTITY : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
               NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
             end loop;
         end case;
@@ -174,7 +172,7 @@ begin
         
       when others =>
         -- default catch others
-        NEX_state <= RESET;
+        NEX_state <= RESET_STATE;
         
     end case;
     
@@ -185,7 +183,7 @@ begin
     if rising_edge(clk) then
       if reset = '1' then
         -- internal signals
-        CUR_state <= RESET; -- default state: reset
+        CUR_state <= RESET_STATE; -- default state: reset
         CUR_node_prev <= 0;
         
         CUR_data_in   <= (others=>(others=>'0'));
