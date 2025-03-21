@@ -16,16 +16,16 @@ use proj_master_2025_lib.p_002_generic_01.all;
 
 entity c_004_layer_01 is
    generic( 
-      g_layer_index       : integer           := 1;
       g_layer_length_cur  : integer           := 4;
       g_layer_length_prev : integer           := 2;
       g_layer_bias        : t_array_integer   := (0,0,0,0);
-      g_layer_weights     : t_array2D_integer := ((0,0),(0,0),(0,0),(0,0))
+      g_layer_weights     : t_array2D_integer := ((0,0),(0,0),(0,0),(0,0));
+      g_act_func          : t_activation_function := AF_RELU
    );
    port( 
       clk         : in     std_logic;
       reset       : in     std_logic;
-      enable      : in     std_logic;
+      --enable      : in     std_logic;
       dst_RX      : in     std_logic;
       src_TX      : in     std_logic;
       ready_to_TX : out    std_logic                                      := '0';
@@ -41,8 +41,8 @@ end c_004_layer_01 ;
 --
 architecture rtl of c_004_layer_01 is
   SIGNAL NEX_state, CUR_state : t_stm_layer;
-  SIGNAL NEX_node_prev : integer := 0;
-  SIGNAL CUR_node_prev : integer := 0;
+  SIGNAL NEX_node_prev : integer range 0 to g_layer_length_prev-1 := 0;
+  SIGNAL CUR_node_prev : integer range 0 to g_layer_length_prev-1 := 0;
   
   SIGNAL NEX_ready_to_RX : std_logic := '0';
   SIGNAL NEX_ready_to_TX : std_logic := '0';
@@ -52,6 +52,8 @@ architecture rtl of c_004_layer_01 is
   SIGNAL NEX_data_in    : t_array_data_signed(0 to g_layer_length_prev-1);
   SIGNAL CUR_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   SIGNAL NEX_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
+  
+  CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
 begin
   P_STM : process(CUR_state, CUR_node_prev)
   begin

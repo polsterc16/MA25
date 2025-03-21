@@ -14,14 +14,18 @@ USE ieee.numeric_std.all;
 PACKAGE p_002_generic_01 IS
   
   
-  type t_array_integer is array(natural range <>) of integer;
-  type t_array2D_integer is array(natural range <>, natural range <>) of integer;
-  
-  --constant c_ADDR_WIDTH : integer := 4;  -- {$c_ADDR_WIDTH}
-  
-  
   constant c_DATA_WIDTH : integer := 16;  -- {$c_DATA_WIDTH}
   constant c_DATA_Q     : integer := 8;   -- {$c_DATA_Q}
+  
+  constant c_FP_INT_MAX : integer := 2**(c_DATA_WIDTH-1) - 1;
+  constant c_FP_INT_MIN : integer := -2**(c_DATA_WIDTH-1);
+  subtype t_fp_int is integer range c_FP_INT_MIN to c_FP_INT_MAX;
+  
+  
+  type t_array_integer is array(natural range <>) of t_fp_int;
+  type t_array2D_integer is array(natural range <>, natural range <>) of t_fp_int;
+  
+  --constant c_ADDR_WIDTH : integer := 4;  -- {$c_ADDR_WIDTH}
   --constant c_NUM_LAYERS : integer := 4;   -- {$c_NUM_LAYERS}
   --constant c_NUM_NODES_MAX : integer := 8;   -- {$c_NUM_NODES_MAX}
   
@@ -70,7 +74,7 @@ PACKAGE p_002_generic_01 IS
     AF_SIGN,
     AF_RELU
   );
-  constant c_ACT_FUNC : t_activation_function := AF_RELU;  -- {$c_ACT_FUNC}
+  --constant c_ACT_FUNC : t_activation_function := AF_RELU;  -- {$c_ACT_FUNC}
   
   
 END p_002_generic_01;
