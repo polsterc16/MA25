@@ -1,1 +1,0 @@
- -do "log -r *" -L proj_master_2025_lib -l transcript.txt -i -t ns -multisource_delay latest +typdelays proj_master_2025_lib.tb_001_binary_counter(struct)
