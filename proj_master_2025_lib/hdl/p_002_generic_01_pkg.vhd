@@ -72,7 +72,8 @@ PACKAGE p_002_generic_01 IS
   type t_activation_function is (
     AF_IDENTITY,
     AF_SIGN,
-    AF_RELU
+    AF_RELU,
+    AF_HARD_SIGMOID
   );
   --constant c_ACT_FUNC : t_activation_function := AF_RELU;  -- {$c_ACT_FUNC}
   

@@ -54,10 +54,18 @@ architecture rtl of c_004_layer_01 is
   SIGNAL NEX_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   
 --  CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
+  CONSTANT c_pos_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED(  1, c_DATA_WIDTH), c_DATA_Q) );
   CONSTANT c_neg_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, c_DATA_WIDTH), c_DATA_Q) );
-  CONSTANT c_pos_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( 1, c_DATA_WIDTH), c_DATA_Q ) );
+  
+  CONSTANT c_s_dw_pos_3     : SIGNED :=  SHIFT_LEFT(TO_SIGNED(  3, 2*c_DATA_WIDTH), 2*c_DATA_Q);
+  CONSTANT c_s_dw_neg_3     : SIGNED :=  SHIFT_LEFT(TO_SIGNED( -3, 2*c_DATA_WIDTH), 2*c_DATA_Q);
+  CONSTANT c_s_dw_pos_half  : SIGNED :=  TO_SIGNED( (2**(2*c_DATA_Q))/2, 2*c_DATA_WIDTH );
+  CONSTANT c_s_dw_pos_sixth : SIGNED :=  TO_SIGNED( (2**(2*c_DATA_Q))/6, 2*c_DATA_WIDTH );
+  
 begin
   P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
+    VARIABLE v_dw_AF_temp : SIGNED := TO_SIGNED( 0, 2*c_DATA_WIDTH );
+  
   begin
     -- -- default assignments
     -- internal signals
@@ -163,6 +171,27 @@ begin
               else
                 -- ELSE: is positive
                 NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+              end if;
+            end loop;
+
+          when AF_HARD_SIGMOID =>
+            -- When: hard sigmoid Function
+            -- https://keras.io/api/layers/activations/#hardsigmoid-function
+            -- 0 if if x <= -3
+            -- 1 if x >= 3
+            -- (x/6) + 0.5 if -3 < x < 3
+            
+            LOOP_AF_HARD_SIGMOID : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
+              if CUR_data_acum(idx_node_this) < c_s_dw_neg_3 then
+                -- IF is less than "-3": return "0"
+                NEX_layer_out(idx_node_this) <= (others => '0');
+              elsif CUR_data_acum(idx_node_this) > c_s_dw_pos_3 then
+                -- IF is greater than "+3": return "1"
+                NEX_layer_out(idx_node_this) <= c_pos_one;
+              else
+                -- ELSE: linear function
+                v_dw_AF_temp := c_s_dw_pos_half + CUR_data_acum(idx_node_this) * c_s_dw_pos_sixth;
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( v_dw_AF_temp(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
               end if;
             end loop;
 
