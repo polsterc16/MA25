@@ -59,12 +59,13 @@ architecture rtl of c_004_layer_01 is
   
   CONSTANT c_s_dw_pos_3     : SIGNED :=  SHIFT_LEFT(TO_SIGNED(  3, 2*c_DATA_WIDTH), 2*c_DATA_Q);
   CONSTANT c_s_dw_neg_3     : SIGNED :=  SHIFT_LEFT(TO_SIGNED( -3, 2*c_DATA_WIDTH), 2*c_DATA_Q);
-  CONSTANT c_s_dw_pos_half  : SIGNED :=  TO_SIGNED( (2**(2*c_DATA_Q))/2, 2*c_DATA_WIDTH );
-  CONSTANT c_s_dw_pos_sixth : SIGNED :=  TO_SIGNED( (2**(2*c_DATA_Q))/6, 2*c_DATA_WIDTH );
+  CONSTANT c_s_pos_half  : SIGNED :=  TO_SIGNED( (2**(c_DATA_Q))/2, c_DATA_WIDTH );
+  CONSTANT c_s_pos_sixth : SIGNED :=  TO_SIGNED( (2**(c_DATA_Q))/6, c_DATA_WIDTH );
   
 begin
   P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
-    VARIABLE v_dw_AF_temp : SIGNED := TO_SIGNED( 0, 2*c_DATA_WIDTH );
+    VARIABLE v_dw_AF_temp1 : SIGNED (c_DATA_WIDTH-1 downto 0);
+    VARIABLE v_dw_AF_temp2 : SIGNED (2*c_DATA_WIDTH-1 downto 0);
   
   begin
     -- -- default assignments
@@ -189,9 +190,13 @@ begin
                 -- IF is greater than "+3": return "1"
                 NEX_layer_out(idx_node_this) <= c_pos_one;
               else
-                -- ELSE: linear function
-                v_dw_AF_temp := c_s_dw_pos_half + CUR_data_acum(idx_node_this) * c_s_dw_pos_sixth;
-                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( v_dw_AF_temp(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+                -- ELSE: linear function: y = (x/6) + 0.5
+                v_dw_AF_temp1 := signed(STD_LOGIC_VECTOR(CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q)));
+                v_dw_AF_temp2 := v_dw_AF_temp1 * c_s_pos_sixth;
+                v_dw_AF_temp1 := c_s_pos_half + v_dw_AF_temp2(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( v_dw_AF_temp1 );
+                
+                --NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR(CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q));
               end if;
             end loop;
 
