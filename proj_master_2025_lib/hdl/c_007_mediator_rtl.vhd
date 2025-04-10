@@ -39,19 +39,27 @@ end c_007_mediator ;
 architecture rtl of c_007_mediator is
   --SIGNAL NEX_state, CUR_state : t_stm_layer;
   signal cnt: integer := 0;
+  signal cntAccept: integer := 0;
   
   signal src_TX_last: std_logic;
+  signal dst_RX_last: std_logic;
+  
+  signal inputs_accepted : t_array2D_integer (0 to g_inputs'length(1)-1, 0 to g_layer_length_last-1);
+  
 begin
   P_CLK : process(clk)
   begin
     if rising_edge(clk) then
       src_TX_last <= src_TX;
+      dst_RX_last <= dst_RX;
       
       if reset = '1' then
         cnt <= 0;
+        cntAccept <= 0;
         ready_to_TX <= '0';
         ack_RX <= '0';
         layer_provide <= (others => (others => '0'));
+        inputs_accepted <= (others => (others => 1));
       else
         ready_to_TX <= '1';
         ack_RX <= '1';
@@ -65,8 +73,20 @@ begin
           layer_provide <= (others => (others => '0'));
         end if;
         
-        if src_TX = '1' and src_TX_last = '0' then
+        -- Detect when our Target has acknowledged our current transmission
+        if dst_RX = '1' and dst_RX_last = '0' then
           cnt <= cnt + 1;
+        end if;
+        
+        -- Detect when our Source has completed a calculation
+        if src_TX = '1' and src_TX_last = '0' then
+          cntAccept <= cntAccept + 1;
+          
+          if cntAccept < inputs_accepted'LENGTH(1) then
+            LOOP_2 : FOR idx in 0 to inputs_accepted'LENGTH(2)-1 LOOP
+              inputs_accepted(cnt, idx) <= TO_INTEGER( SIGNED(layer_accept(idx) ) );
+            end loop;
+          end if;
         end if;
       end if; -- if reset else
     end if; -- if CLK
