@@ -6,22 +6,21 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;
+library proj_master_2025_lib;
+use proj_master_2025_lib.p_002_generic_01.all;
 
 entity c_x_ANN_01 is
    port( 
-      clk          : in     std_logic;
-      reset        : in     std_logic;
-      
+      clk         : in     std_logic;
+      reset       : in     std_logic;
       src_TX      : in     std_logic;
       ack_RX      : out    std_logic;
-      
       dst_RX      : in     std_logic;
       ready_to_TX : out    std_logic;
-      
       -- layer_in    : in     t_array_data_stdlv (0 to 1);
       -- layer_out   : out    t_array_data_stdlv (0 to 1)
-layer_in : in t_array_data_stdlv (0 to 1);
-layer_out : out t_array_data_stdlv (0 to 0)
+      layer_in    : in     t_array_data_stdlv (0 to 1);
+      layer_out   : out    t_array_data_stdlv (0 to 0)
    );
 
 -- Declarations
