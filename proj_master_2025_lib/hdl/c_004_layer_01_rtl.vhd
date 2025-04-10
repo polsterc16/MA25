@@ -50,8 +50,8 @@ architecture rtl of c_004_layer_01 is
   
   SIGNAL CUR_data_in    : t_array_data_signed(0 to g_layer_length_prev-1);
   SIGNAL NEX_data_in    : t_array_data_signed(0 to g_layer_length_prev-1);
-  SIGNAL CUR_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
-  SIGNAL NEX_data_acum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
+  SIGNAL CUR_data_accum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
+  SIGNAL NEX_data_accum  : t_array_data_signed_dw(0 to g_layer_length_cur-1);
   
 --  CONSTANT c_ACT_FUNC   : t_activation_function := g_act_func;
   CONSTANT c_pos_one : STD_LOGIC_VECTOR := STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED(  1, c_DATA_WIDTH), c_DATA_Q) );
@@ -63,7 +63,7 @@ architecture rtl of c_004_layer_01 is
   CONSTANT c_s_pos_sixth : SIGNED :=  TO_SIGNED( (2**(c_DATA_Q))/6, c_DATA_WIDTH );
   
 begin
-  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_acum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
+  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_accum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
     VARIABLE v_dw_AF_temp1 : SIGNED (c_DATA_WIDTH-1 downto 0);
     VARIABLE v_dw_AF_temp2 : SIGNED (2*c_DATA_WIDTH-1 downto 0);
   
@@ -74,7 +74,7 @@ begin
     NEX_node_prev <= CUR_node_prev;
     
     NEX_data_in   <= CUR_data_in;
-    NEX_data_acum <= CUR_data_acum;
+    NEX_data_accum <= CUR_data_accum;
     
     -- signals to outputs
     NEX_ack_RX <= ack_RX;
@@ -109,7 +109,7 @@ begin
           NEX_state <= BIAS_SETUP;
         end if;
         
-      -- we fill our acummulators with bias value
+      -- we fill our accummulators with bias value
       when BIAS_SETUP =>
         NEX_ack_RX <= '0'; -- reset
         
@@ -117,22 +117,22 @@ begin
         LOOP_BIAS : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- we create first entry:
           -- BIAS * ONE (Fixed Point) - results in double width
-          --NEX_data_acum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
-          NEX_data_acum(idx_node_cur) <=  SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q);
+          --NEX_data_accum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
+          NEX_data_accum(idx_node_cur) <=  SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q);
         end LOOP;
         
-        NEX_state <= ACUM;
+        NEX_state <= MAC;
         
-        -- nodes of PREVIOUS LAYER, which are decremented in ACUM
+        -- nodes of PREVIOUS LAYER, which are decremented in MAC
         NEX_node_prev <= g_layer_length_prev-1;
         
       -- we accumulate the node values times their weights
-      when ACUM =>
+      when MAC =>
         -- loop through nodes of THIS LAYER
         LOOP_Node : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- Data (THIS LAYER node) = Data (THIS LAYER node) + Weight (of PREV LAYER node, relative to THIS LAYER node) * Data (PREV LAYER node)
-          -- NEX_data_acum(node_this) <= CUR_data_acum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
-          NEX_data_acum(idx_node_cur) <= CUR_data_acum(idx_node_cur) + TO_SIGNED(g_layer_weights( idx_node_cur, CUR_node_prev), c_DATA_WIDTH) * CUR_data_in(CUR_node_prev) ;
+          -- NEX_data_accum(node_this) <= CUR_data_accum(node_this) + c_A_WEIGHTS(g_layer_index, node_this, CUR_node_prev) * CUR_data_in(CUR_node_prev) ;
+          NEX_data_accum(idx_node_cur) <= CUR_data_accum(idx_node_cur) + TO_SIGNED(g_layer_weights( idx_node_cur, CUR_node_prev), c_DATA_WIDTH) * CUR_data_in(CUR_node_prev) ;
         end LOOP;
         
         -- decrement node of PREVIOUS LAYER
@@ -144,16 +144,16 @@ begin
         end if;
         
       when ACT_FUNC =>
-        -- reminder: "CUR_data_acum" has 2x width of "layer_out" !
+        -- reminder: "CUR_data_accum" has 2x width of "layer_out" !
         case g_act_func is
           when AF_SIGN =>
             -- When: Sign Function
             LOOP_AF_SIGN : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
               -- check if the whole slice is Zero
-              if CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'RANGE) = (CUR_data_acum(idx_node_this)'range => '0') then
+              if CUR_data_accum(idx_node_this)(CUR_data_accum(idx_node_this)'RANGE) = (CUR_data_accum(idx_node_this)'range => '0') then
                 -- is zero
                 NEX_layer_out(idx_node_this) <= (others => '0');
-              elsif CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'HIGH) = '1' then
+              elsif CUR_data_accum(idx_node_this)(CUR_data_accum(idx_node_this)'HIGH) = '1' then
                 -- is negative
                 --NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( SHIFT_LEFT(TO_SIGNED( -1, 2*c_DATA_WIDTH), c_DATA_Q) );
                 NEX_layer_out(idx_node_this) <= c_neg_one;
@@ -166,12 +166,12 @@ begin
           when AF_RELU =>
             -- When: ReLu Function
             LOOP_AF_RELU : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
-              if CUR_data_acum(idx_node_this)(CUR_data_acum(idx_node_this)'HIGH) = '1' then
+              if CUR_data_accum(idx_node_this)(CUR_data_accum(idx_node_this)'HIGH) = '1' then
                 -- is negative
                 NEX_layer_out(idx_node_this) <= (others => '0');
               else
                 -- ELSE: is positive
-                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+                NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_accum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
               end if;
             end loop;
 
@@ -183,27 +183,27 @@ begin
             -- (x/6) + 0.5 if -3 < x < 3
             
             LOOP_AF_HARD_SIGMOID : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
-              if CUR_data_acum(idx_node_this) < c_s_dw_neg_3 then
+              if CUR_data_accum(idx_node_this) < c_s_dw_neg_3 then
                 -- IF is less than "-3": return "0"
                 NEX_layer_out(idx_node_this) <= (others => '0');
-              elsif CUR_data_acum(idx_node_this) > c_s_dw_pos_3 then
+              elsif CUR_data_accum(idx_node_this) > c_s_dw_pos_3 then
                 -- IF is greater than "+3": return "1"
                 NEX_layer_out(idx_node_this) <= c_pos_one;
               else
                 -- ELSE: linear function: y = (x/6) + 0.5
-                v_dw_AF_temp1 := signed(STD_LOGIC_VECTOR(CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q)));
+                v_dw_AF_temp1 := signed(STD_LOGIC_VECTOR(CUR_data_accum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q)));
                 v_dw_AF_temp2 := v_dw_AF_temp1 * c_s_pos_sixth;
                 v_dw_AF_temp1 := c_s_pos_half + v_dw_AF_temp2(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q);
                 NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( v_dw_AF_temp1 );
                 
-                --NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR(CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q));
+                --NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR(CUR_data_accum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q));
               end if;
             end loop;
 
           when others =>
             -- When: Identity Function
             LOOP_AF_IDENTITY : FOR idx_node_this in 0 to (g_layer_length_cur-1) LOOP
-              NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_acum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
+              NEX_layer_out(idx_node_this) <= STD_LOGIC_VECTOR( CUR_data_accum(idx_node_this)(c_DATA_WIDTH + c_DATA_Q - 1 downto c_DATA_Q) );
             end loop;
         end case;
         
@@ -227,7 +227,7 @@ begin
         CUR_node_prev <= 0;
         
         CUR_data_in   <= (others=>(others=>'0'));
-        CUR_data_acum <= (others=>(others=>'0'));
+        CUR_data_accum <= (others=>(others=>'0'));
         
         -- outputs
         ready_to_TX <= '0';
@@ -239,7 +239,7 @@ begin
         CUR_node_prev <= NEX_node_prev;
         
         CUR_data_in   <= NEX_data_in;
-        CUR_data_acum <= NEX_data_acum;
+        CUR_data_accum <= NEX_data_accum;
         
         -- outputs
         ready_to_TX <= NEX_ready_to_TX;
