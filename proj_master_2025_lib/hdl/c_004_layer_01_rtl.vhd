@@ -63,7 +63,7 @@ architecture rtl of c_004_layer_01 is
   CONSTANT c_s_pos_sixth : SIGNED :=  TO_SIGNED( (2**(c_DATA_Q))/6, c_DATA_WIDTH );
   
 begin
-  P_STM : process(CUR_state, CUR_node_prev, src_TX, CUR_data_accum, dst_RX, CUR_data_in, ack_RX, ready_to_TX, layer_out, layer_in)
+  P_STM : process(CUR_state, CUR_node_prev, src_TX, dst_RX)
     VARIABLE v_dw_AF_temp1 : SIGNED (c_DATA_WIDTH-1 downto 0);
     VARIABLE v_dw_AF_temp2 : SIGNED (2*c_DATA_WIDTH-1 downto 0);
   
@@ -84,8 +84,15 @@ begin
     case(CUR_state) is
       -- Default reset state
       when RESET_STATE =>
-        -- always try to go to RX mode
+        -- default: goto Receive state
         NEX_state <= IDLE_RX;
+        
+        NEX_node_prev <= 0;
+        NEX_data_in   <= (others=>(others=>'0'));
+        NEX_data_accum <= (others=>(others=>'0'));
+        NEX_ready_to_TX <= '0';
+        NEX_ack_RX <= '0';
+        NEX_layer_out <= (others=>(others=>'0'));
         
       -- we send our result, until it is accepted
       when IDLE_TX =>
@@ -213,9 +220,7 @@ begin
       when others =>
         -- default catch others
         NEX_state <= RESET_STATE;
-        
     end case;
-    
   end process;
   
   P_CLK : process(clk)
@@ -247,7 +252,6 @@ begin
         layer_out   <= NEX_layer_out;
       end if;
     end if;
-    
   end process;
 end architecture rtl;
 
