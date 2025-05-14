@@ -123,8 +123,6 @@ begin
         -- initialize bias in layer nodes
         LOOP_BIAS : FOR idx_node_cur in 0 to (g_layer_length_cur-1) LOOP
           -- we create first entry:
-          -- BIAS * ONE (Fixed Point) - results in double width
-          --NEX_data_accum(node_this) <=  c_A_BIAS(g_layer_index, node_this) * c_FP_ONE ;
           NEX_data_accum(idx_node_cur) <=  SHIFT_LEFT(TO_SIGNED( g_layer_bias(idx_node_cur), 2*c_DATA_WIDTH), c_DATA_Q);
         end LOOP;
         
