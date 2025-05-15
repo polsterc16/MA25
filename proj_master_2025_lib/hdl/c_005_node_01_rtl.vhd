@@ -51,7 +51,7 @@ begin
           -- BIAS: convert to "signed" of double length, then left_shift to correct position
           -- BIAS is stored as last element of generic array :: at index array'HIGH
           --bias_v := SHIFT_LEFT(TO_SIGNED( array_int_bias_weight_g(array_int_bias_weight'high), 2*data_width_g), Q_width_g);
-          val_out <= SHIFT_LEFT(TO_SIGNED( array_int_bias_weight_g(array_int_bias_weight'high), 2*c_DATA_WIDTH), c_DATA_Q);
+          val_out <= SHIFT_LEFT(TO_SIGNED( array_int_bias_weight_g(array_int_bias_weight'high), 2*c_DATA_WIDTH), c_DATA_QF);
         elsif calc = '1' then
           -- val_out[stdv:16] = val_out[signed:16] + val_in[signed:8] * weight(adress[int:4])[signed:8]
           val_out <= SIGNED(val_out) + SIGNED(val_in) * TO_SIGNED(array_int_bias_weight_g(TO_INTEGER( UNSIGNED(address) )), c_DATA_WIDTH);
