@@ -84,7 +84,7 @@ begin
           
           if cntAccept < inputs_accepted'LENGTH(1) then
             LOOP_2 : FOR idx in 0 to inputs_accepted'LENGTH(2)-1 LOOP
-              inputs_accepted(cnt, idx) <= TO_INTEGER( SIGNED(layer_accept(idx) ) );
+              inputs_accepted(cntAccept, idx) <= TO_INTEGER( SIGNED(layer_accept(idx) ) );
             end loop;
           end if;
         end if;
